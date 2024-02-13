@@ -317,10 +317,38 @@ def betterEvaluationFunction(currentGameState: GameState):
     Your extreme ghost-hunting, pellet-nabbing, food-gobbling, unstoppable
     evaluation function (question 5).
 
-    DESCRIPTION: <write something here so we know what you did>
+    DESCRIPTION: Similar to question 1 but we added position of the capsules and computed the manhattan distance instead of 
+    the euclidean distace as manhattan seemed to perform better. Also messed around with adding or subtracting until i found a good combination 
+    through trial and error
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    pos = currentGameState.getPacmanPosition()
+    food = currentGameState.getFood()
+    ghost_states = currentGameState.getGhostStates()
+    scared_times = [ghostState.scaredTimer for ghostState in ghost_states]
+    capsules_pos = currentGameState.getCapsules()
+    
+    eval = 0
+
+    if len(food.asList()) > 0:
+        nearest_food = min([manhattanDistance(pos, food_pos) for food_pos in food.asList()])
+        eval -= nearest_food 
+
+    if len(capsules_pos) > 0:
+        nearest_capsule = min([manhattanDistance(pos, cap_pos) for cap_pos in capsules_pos])
+        eval -= nearest_capsule 
+
+    for ghost_state in ghost_states:
+        ghost_pos = ghost_state.getPosition()
+        ghost_distance = manhattanDistance(pos, ghost_pos)
+        if ghost_distance < 2: 
+            if scared_times[0] > 0:
+                eval += 300
+            else: 
+                eval -= 100
+
+    eval += 10 * currentGameState.getScore()
+    return eval
 
 # Abbreviation
 better = betterEvaluationFunction
