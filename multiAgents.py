@@ -75,7 +75,32 @@ class ReflexAgent(Agent):
         newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
 
         "*** YOUR CODE HERE ***"
-        return successorGameState.getScore()
+        # common design for evaluation functions is eval(s) = w_1*f_1(s) + ... + w_i*f_i(s)
+        # where s = state, w_1 is some weight, f_i(s) = corresponds to a feature extracted from the input state s -> return numerical value
+        # subtracting incentivizes towards the goals, and makes pac man move
+        
+        def compute_euclidean(pos_1, pos_2):
+            x_1, y_1 = pos_1
+            x_2, y_2 = pos_2
+            return ((x_2 - x_1)**2 + (y_2 - y_1)**2)**0.5
+        
+        eval = 0
+        if len(newFood.asList()) > 0:
+            nearest = min([compute_euclidean(newPos, food) for food in newFood.asList()])
+            eval -= nearest
+       
+        for ghost_state in newGhostStates:
+            ghost_pos = ghost_state.getPosition()
+            ghost_distance = compute_euclidean(newPos, ghost_pos)
+            if ghost_distance < 2: 
+                eval -= 1000
+        
+        if sum(newScaredTimes) > 0:
+            eval -= 500
+                
+        eval -= 10 * len(newFood.asList()) - successorGameState.getScore()
+        return eval
+        # return successorGameState.getScore()
 
 def scoreEvaluationFunction(currentGameState: GameState):
     """
