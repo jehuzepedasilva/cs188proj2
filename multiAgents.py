@@ -85,6 +85,7 @@ class ReflexAgent(Agent):
             return ((x_2 - x_1)**2 + (y_2 - y_1)**2)**0.5
         
         eval = 0
+        
         if len(newFood.asList()) > 0:
             nearest = min([compute_euclidean(newPos, food) for food in newFood.asList()])
             eval -= nearest
@@ -144,7 +145,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
 
         Here are some method calls that might be useful when implementing minimax.
 
-        gameState.getLegalActions(agentIndex):
+        gameState.getLegalActions(agentIndex): 
         Returns a list of legal actions for an agent
         agentIndex=0 means Pacman, ghosts are >= 1
 
@@ -161,6 +162,8 @@ class MinimaxAgent(MultiAgentSearchAgent):
         Returns whether or not the game state is a losing state
         """
         "*** YOUR CODE HERE ***"
+        # getLegalActions is like the children
+        
         def max_value(state, depth):
             v = float('-inf')
             for act in state.getLegalActions(0):
